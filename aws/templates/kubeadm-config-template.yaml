@@ -1,0 +1,54 @@
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha4
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    cluster.x-k8s.io/conversion-data: '{"apiVersion":"bootstrap.cluster.x-k8s.io/v1beta1","kind":"KubeadmConfigTemplate","spec":{"template":{"spec":{"files":[{"content":"#!/bin/bash\n#
+      CAPI does not expose an API to modify KubeProxyConfiguration\n# this is a workaround
+      to use a script with preKubeadmCommand to modify the kubeadm config files\n#
+      https://github.com/kubernetes-sigs/cluster-api/issues/4512\nfor i in $(ls /run/kubeadm/
+      | grep ''kubeadm.yaml\\|kubeadm-join-config.yaml''); do\n  cat \u003c\u003cEOF\u003e\u003e
+      \"/run/kubeadm//$i\"\n---\nkind: KubeProxyConfiguration\napiVersion: kubeproxy.config.k8s.io/v1alpha1\nmetricsBindAddress:
+      \"0.0.0.0:10249\"\nEOF\ndone\n","path":"/run/kubeadm/konvoy-set-kube-proxy-configuration.sh","permissions":"0700"},{"content":"[metrics]\n  address
+      = \"0.0.0.0:1338\"\n  grpc_histogram = false\n","path":"/etc/containerd/conf.d/konvoy-metrics.toml","permissions":"0644"}],"format":"cloud-config","joinConfiguration":{"discovery":{},"nodeRegistration":{"kubeletExtraArgs":{"cloud-provider":"aws"},"name":"{{
+      ds.meta_data.local_hostname }}"}},"preKubeadmCommands":["systemctl daemon-reload","systemctl
+      restart containerd","/run/kubeadm/konvoy-set-kube-proxy-configuration.sh"]}}}}'
+  name: sbx-md-0
+  namespace: default
+spec:
+  template:
+    spec:
+      files:
+      - content: |
+          #!/bin/bash
+          # CAPI does not expose an API to modify KubeProxyConfiguration
+          # this is a workaround to use a script with preKubeadmCommand to modify the kubeadm config files
+          # https://github.com/kubernetes-sigs/cluster-api/issues/4512
+          for i in $(ls /run/kubeadm/ | grep 'kubeadm.yaml\|kubeadm-join-config.yaml'); do
+            cat <<EOF>> "/run/kubeadm//$i"
+          ---
+          kind: KubeProxyConfiguration
+          apiVersion: kubeproxy.config.k8s.io/v1alpha1
+          metricsBindAddress: "0.0.0.0:10249"
+          EOF
+          done
+        path: /run/kubeadm/konvoy-set-kube-proxy-configuration.sh
+        permissions: "0700"
+      - content: |
+          [metrics]
+            address = "0.0.0.0:1338"
+            grpc_histogram = false
+        path: /etc/containerd/conf.d/konvoy-metrics.toml
+        permissions: "0644"
+      format: cloud-config
+      joinConfiguration:
+        discovery: {}
+        nodeRegistration:
+          kubeletExtraArgs:
+            cloud-provider: aws
+          name: '{{ ds.meta_data.local_hostname }}'
+      preKubeadmCommands:
+      - systemctl daemon-reload
+      - systemctl restart containerd
+      - /run/kubeadm/konvoy-set-kube-proxy-configuration.sh
+

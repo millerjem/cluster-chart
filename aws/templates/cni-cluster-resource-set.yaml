@@ -1,0 +1,17 @@
+---
+apiVersion: addons.cluster.x-k8s.io/v1alpha3
+kind: ClusterResourceSet
+metadata:
+  name: calico-installation-sbx
+  namespace: default
+spec:
+  clusterSelector:
+    matchLabels:
+      konvoy.d2iq.io/cluster-name: sbx
+      konvoy.d2iq.io/cni: calico
+      konvoy.d2iq.io/provider: aws
+  resources:
+  - kind: ConfigMap
+    name: calico-cni-sbx
+  strategy: ApplyOnce
+status: {}

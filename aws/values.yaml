@@ -1,0 +1,5 @@
+controlplane:
+  replicas: 3
+workers:
+  replicas: 4
+

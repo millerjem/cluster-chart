@@ -1,0 +1,73 @@
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+kind: AWSCluster
+metadata:
+  annotations:
+    cluster.x-k8s.io/conversion-data: '{"apiVersion":"infrastructure.cluster.x-k8s.io/v1beta1","kind":"AWSCluster","spec":{"additionalTags":{"konvoy.d2iq.io/cluster-name":"sbx","konvoy.d2iq.io/version":"v2.1.1"},"bastion":{"allowedCIDRBlocks":["0.0.0.0/0"],"enabled":false},"controlPlaneEndpoint":{"host":"","port":0},"controlPlaneLoadBalancer":{"crossZoneLoadBalancing":false,"scheme":"internet-facing"},"identityRef":{"kind":"AWSClusterControllerIdentity","name":"default"},"network":{"cni":{"cniIngressRules":[{"description":"typha
+      (calico)","fromPort":5473,"protocol":"tcp","toPort":5473},{"description":"bgp
+      (calico)","fromPort":179,"protocol":"tcp","toPort":179},{"description":"IP-in-IP
+      (calico)","fromPort":-1,"protocol":"4","toPort":65535},{"description":"containerd
+      metrics","fromPort":1338,"protocol":"tcp","toPort":1338},{"description":"kube-proxy
+      metrics","fromPort":10249,"protocol":"tcp","toPort":10249},{"description":"NVIDIA
+      Data Center GPU Manager metrics","fromPort":9400,"protocol":"tcp","toPort":9400},{"description":"Prometheus
+      node exporter metrics","fromPort":9100,"protocol":"tcp","toPort":9100}]},"vpc":{"availabilityZoneSelection":"Ordered","availabilityZoneUsageLimit":3}},"region":"us-east-1","sshKeyName":""},"status":{"networkStatus":{"apiServerElb":{"attributes":{}}},"ready":false}}'
+  name: sbx
+  namespace: default
+spec:
+  additionalTags:
+    konvoy.d2iq.io/cluster-name: sbx
+    konvoy.d2iq.io/version: v2.1.1
+  bastion:
+    allowedCIDRBlocks:
+    - 0.0.0.0/0
+    enabled: false
+  controlPlaneEndpoint:
+    host: ""
+    port: 0
+  controlPlaneLoadBalancer:
+    crossZoneLoadBalancing: false
+    scheme: internet-facing
+  identityRef:
+    kind: AWSClusterControllerIdentity
+    name: default
+  network:
+    cni:
+      cniIngressRules:
+      - description: typha (calico)
+        fromPort: 5473
+        protocol: tcp
+        toPort: 5473
+      - description: bgp (calico)
+        fromPort: 179
+        protocol: tcp
+        toPort: 179
+      - description: IP-in-IP (calico)
+        fromPort: -1
+        protocol: "4"
+        toPort: 65535
+      - description: containerd metrics
+        fromPort: 1338
+        protocol: tcp
+        toPort: 1338
+      - description: kube-proxy metrics
+        fromPort: 10249
+        protocol: tcp
+        toPort: 10249
+      - description: NVIDIA Data Center GPU Manager metrics
+        fromPort: 9400
+        protocol: tcp
+        toPort: 9400
+      - description: Prometheus node exporter metrics
+        fromPort: 9100
+        protocol: tcp
+        toPort: 9100
+    vpc:
+      availabilityZoneSelection: Ordered
+      availabilityZoneUsageLimit: 3
+  region: us-east-1
+  sshKeyName: ""
+status:
+  networkStatus:
+    apiServerElb:
+      attributes: {}
+  ready: false

@@ -1,0 +1,38 @@
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+kind: AWSMachineTemplate
+metadata:
+  annotations:
+    cluster.x-k8s.io/conversion-data: '{"apiVersion":"infrastructure.cluster.x-k8s.io/v1beta1","kind":"AWSMachineTemplate","spec":{"template":{"metadata":{},"spec":{"ami":{},"cloudInit":{},"iamInstanceProfile":"control-plane.cluster-api-provider-aws.sigs.k8s.io","imageLookupBaseOS":"centos-7","imageLookupFormat":"capa-ami-{{.BaseOS}}-?{{.K8sVersion}}-*","imageLookupOrg":"258751437250","instanceType":"m5.xlarge","rootVolume":{"size":80},"sshKeyName":""}}}}'
+  name: sbx-control-plane
+  namespace: default
+spec:
+  template:
+    spec:
+      ami: {}
+      cloudInit: {}
+      iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
+      imageLookupBaseOS: centos-7
+      imageLookupFormat: capa-ami-{{.BaseOS}}-?{{.K8sVersion}}-*
+      imageLookupOrg: "258751437250"
+      instanceType: m5.xlarge
+      rootVolume:
+        size: 80
+      sshKeyName: ""
+---
+apiVersion: addons.cluster.x-k8s.io/v1alpha3
+kind: ClusterResourceSet
+metadata:
+  name: calico-installation-sbx
+  namespace: default
+spec:
+  clusterSelector:
+    matchLabels:
+      konvoy.d2iq.io/cluster-name: sbx
+      konvoy.d2iq.io/cni: calico
+      konvoy.d2iq.io/provider: aws
+  resources:
+  - kind: ConfigMap
+    name: calico-cni-sbx
+  strategy: ApplyOnce
+status: {}
